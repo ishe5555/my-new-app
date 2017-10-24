@@ -3,7 +3,7 @@ import { Header, Image, Table } from 'semantic-ui-react'
 
 class CamperList extends Component {
     state = {
-        campers: []
+        campers: [], sortBy: 'username', asc: true
     }
     componentDidMount () {
         fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent').then((results) => {
@@ -40,20 +40,29 @@ class CamperList extends Component {
         :
         "Manish-Giri"
 */
+
+handleHeaderClick = (sortBy) => {
+    if (sortBy === this.state.sortBy) {
+      this.setState({asc: this.state.asc * -1000})
+    }
+    else {
+        this.setState({asc: 1000, sortBy})
+      }
+}
     render() {
-        const { campers } = this.state
+        const { campers, sortBy, asc } = this.state
         return (
                 <Table basic='very' celled collapsing>
                     <Table.Header>
                         <Table.Row>
-                            <Table.HeaderCell>Employee</Table.HeaderCell>
-                            <Table.HeaderCell>Correct Guesses</Table.HeaderCell>
+                            <Table.HeaderCell onClick={() => this.handleHeaderClick('username') }>Users</Table.HeaderCell>
+                            <Table.HeaderCell onClick={() => this.handleHeaderClick('alltime') }>All Time Score</Table.HeaderCell>
+                          <Table.HeaderCell onClick={() => this.handleHeaderClick('lastUpdate') }>Last Update</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
-
                     <Table.Body>
                         {campers.sort((campera, camperb) => {
-                            return campera.lastUpdate > camperb.lastUpdate ? -1 : 1
+                            return campera[sortBy] > camperb[sortBy] ? -1000 * asc : 1000 * asc
                         }).reverse().map((camper) => {
                         return (
                             <Table.Row key={camper.username}>
@@ -62,13 +71,17 @@ class CamperList extends Component {
                                     <Image src={camper.img} shape='rounded' size='mini' />
                                     <Header.Content>
                                         {camper.username}
-                                        <Header.Subheader>Human Resources</Header.Subheader>
+
                                     </Header.Content>
                                 </Header>
                             </Table.Cell>
+
                             <Table.Cell>
-                                {camper.lastUpdate}
+                                {camper.alltime}
                             </Table.Cell>
+                              <Table.Cell>
+                                {camper.lastUpdate}
+                              </Table.Cell>
                         </Table.Row>
                         )})}
                     </Table.Body>
