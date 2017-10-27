@@ -1,19 +1,24 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { Header, Image, Table } from 'semantic-ui-react'
 
 class CamperList extends Component {
-    state = {
-        campers: [], sortBy: 'username', asc: true
-    }
-    componentDidMount () {
-        fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent').then((results) => {
-            return results.json()
-        }).then(stuffToDo => {
-            console.log(stuffToDo)
-            this.setState({campers: stuffToDo})
-        })
-    }
-/*    Done with async function instead of promise. Promise would allow other things to be
+  state = {
+    campers: [],
+    sortBy: 'username',
+    asc: true,
+  }
+  componentDidMount() {
+    fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent')
+      .then(results => {
+        return results.json()
+      })
+      .then(stuffToDo => {
+        console.log(stuffToDo)
+        this.setState({ campers: stuffToDo })
+      })
+  }
+
+  /*    Done with async function instead of promise. Promise would allow other things to be
       doing other things at the same time, while async forces it to wait - not as good for larger size fetches.
     async componentDidMount () {
         const CamperPromise = await fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent')
@@ -23,7 +28,7 @@ class CamperList extends Component {
     }
 */
 
-/*
+  /*
     alltime
         :
         6294
@@ -41,53 +46,58 @@ class CamperList extends Component {
         "Manish-Giri"
 */
 
-handleHeaderClick = (sortBy) => {
+  handleHeaderClick = sortBy => {
     if (sortBy === this.state.sortBy) {
-      this.setState({asc: this.state.asc * -1000})
+      this.setState({ asc: this.state.asc * -1000 })
+    } else {
+      this.setState({ asc: 1000, sortBy })
     }
-    else {
-        this.setState({asc: 1000, sortBy})
-      }
-}
-    render() {
-        const { campers, sortBy, asc } = this.state
-        return (
-                <Table basic='very' celled collapsing>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell onClick={() => this.handleHeaderClick('username') }>Users</Table.HeaderCell>
-                            <Table.HeaderCell onClick={() => this.handleHeaderClick('alltime') }>All Time Score</Table.HeaderCell>
-                          <Table.HeaderCell onClick={() => this.handleHeaderClick('lastUpdate') }>Last Update</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {campers.sort((campera, camperb) => {
-                            return campera[sortBy] > camperb[sortBy] ? -1000 * asc : 1000 * asc
-                        }).reverse().map((camper) => {
-                        return (
-                            <Table.Row key={camper.username}>
-                            <Table.Cell>
-                                <Header as='h4' image>
-                                    <Image src={camper.img} shape='rounded' size='mini' />
-                                    <Header.Content>
-                                        {camper.username}
+  }
+  render() {
+    const { campers } = this.state
+    const { changeSort, sortBy, asc } = this.props
+    return (
+      <Table basic="very" celled collapsing>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell onClick={() => changeSort('username')}>
+              Users
+            </Table.HeaderCell>
+            <Table.HeaderCell onClick={() => changeSort('alltime')}>
+              All Time Score
+            </Table.HeaderCell>
+            <Table.HeaderCell onClick={() => changeSort('lastUpdate')}>
+              Last Update
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {campers
+            .sort((campera, camperb) => {
+              return campera[sortBy] > camperb[sortBy]
+                ? -1000 * asc
+                : 1000 * asc
+            })
+            .reverse()
+            .map(camper => {
+              return (
+                <Table.Row key={camper.username}>
+                  <Table.Cell>
+                    <Header as="h4" image>
+                      <Image src={camper.img} shape="rounded" size="mini" />
+                      <Header.Content>{camper.username}</Header.Content>
+                    </Header>
+                  </Table.Cell>
 
-                                    </Header.Content>
-                                </Header>
-                            </Table.Cell>
-
-                            <Table.Cell>
-                                {camper.alltime}
-                            </Table.Cell>
-                              <Table.Cell>
-                                {camper.lastUpdate}
-                              </Table.Cell>
-                        </Table.Row>
-                        )})}
-                    </Table.Body>
-                </Table>
-        )
-    }
+                  <Table.Cell>{camper.alltime}</Table.Cell>
+                  <Table.Cell>{camper.lastUpdate}</Table.Cell>
+                </Table.Row>
+              )
+            })}
+        </Table.Body>
+      </Table>
+    )
+  }
 }
 
 export default CamperList
