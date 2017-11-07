@@ -7,16 +7,16 @@ class CamperList extends Component {
     sortBy: 'username',
     asc: true,
   }
-  componentDidMount() {
-    fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent')
-      .then(results => {
-        return results.json()
-      })
-      .then(stuffToDo => {
-        console.log(stuffToDo)
-        this.setState({ campers: stuffToDo })
-      })
-  }
+  //  componentDidMount() {
+  //    fetch('https://fcctop100.herokuapp.com/api/fccusers/top/recent')
+  //      .then(results => {
+  //        return results.json()
+  //      })
+  //      .then(stuffToDo => {
+  //        console.log(stuffToDo)
+  //        this.setState({ campers: stuffToDo })
+  //      })
+  //  }
 
   /*    Done with async function instead of promise. Promise would allow other things to be
       doing other things at the same time, while async forces it to wait - not as good for larger size fetches.
@@ -46,16 +46,16 @@ class CamperList extends Component {
         "Manish-Giri"
 */
 
-  handleHeaderClick = sortBy => {
+  /*  handleHeaderClick = sortBy => {
     if (sortBy === this.state.sortBy) {
       this.setState({ asc: this.state.asc * -1000 })
     } else {
       this.setState({ asc: 1000, sortBy })
     }
   }
+*/
   render() {
-    const { campers } = this.state
-    const { changeSort, sortBy, asc } = this.props
+    const { changeSort, sortBy, asc, campers = [] } = this.props
     return (
       <Table basic="very" celled collapsing>
         <Table.Header>
